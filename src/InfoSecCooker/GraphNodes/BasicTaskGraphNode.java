@@ -6,7 +6,7 @@ import InfoSecCooker.RuntimeExceptions.ExpectedEdgeOnNodeInputButNotFound;
 import InfoSecCooker.RuntimeExceptions.ExpectedEdgeOnNodeOutputButNotFound;
 import InfoSecCooker.RuntimeExceptions.InfoSecCookerRuntimeException;
 import InfoSecCooker.RuntimeExceptions.NullDataReceivedFromGraphNodeAsInput;
-import InfoSecCooker.Outputs.InfoSecData;
+import InfoSecCooker.Data.InfoSecData;
 
 import java.util.ArrayList;
 import java.util.HashMap;

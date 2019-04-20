@@ -3,7 +3,7 @@ package InfoSecCooker.GraphNodes.SpecificNodeImplementations.Collections;
 import InfoSecCooker.GraphEdge.PipeGraphEdge;
 import InfoSecCooker.GraphNodes.BasicTaskGraphNode;
 import InfoSecCooker.GraphNodes.GraphNodeInformation;
-import InfoSecCooker.Outputs.InfoSecData;
+import InfoSecCooker.Data.InfoSecData;
 
 import java.util.ArrayList;
 import java.util.HashMap;

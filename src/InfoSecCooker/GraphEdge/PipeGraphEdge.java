@@ -1,7 +1,7 @@
 package InfoSecCooker.GraphEdge;
 
 import InfoSecCooker.GraphNodes.TaskGraphNode;
-import InfoSecCooker.Outputs.InfoSecData;
+import InfoSecCooker.Data.InfoSecData;
 
 import java.util.ArrayList;
 

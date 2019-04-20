@@ -1,6 +1,6 @@
 package InfoSecCooker.GraphEdge;
 
-import InfoSecCooker.Outputs.InfoSecData;
+import InfoSecCooker.Data.InfoSecData;
 
 import java.util.concurrent.ArrayBlockingQueue;
 

@@ -3,7 +3,7 @@ package InfoSecCooker.GraphNodes.FlowControl;
 import InfoSecCooker.GraphEdge.PipeGraphEdge;
 import InfoSecCooker.GraphNodes.GraphNodeInformation;
 import InfoSecCooker.GraphNodes.TaskGraphNode;
-import InfoSecCooker.Outputs.InfoSecData;
+import InfoSecCooker.Data.InfoSecData;
 import InfoSecCooker.RuntimeExceptions.Collections.CollectionsException;
 import InfoSecCooker.RuntimeExceptions.NullDataReceivedFromGraphNodeAsInput;
 

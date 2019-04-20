@@ -3,10 +3,9 @@ package InfoSecCooker.GraphNodes.SpecificNodeImplementations.Collections;
 import InfoSecCooker.RuntimeExceptions.Collections.CollectionsException;
 import InfoSecCooker.GraphEdge.PipeGraphEdge;
 import InfoSecCooker.GraphNodes.GraphNodeInformation;
-import InfoSecCooker.Outputs.CollectionData;
-import InfoSecCooker.Outputs.InfoSecData;
+import InfoSecCooker.Data.CollectionData;
+import InfoSecCooker.Data.InfoSecData;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
