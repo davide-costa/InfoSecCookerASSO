@@ -106,7 +106,6 @@ public abstract class TaskGraphNode
 
     protected void outputDataToDestinations(ArrayList<InfoSecData> outputs) throws ExpectedEdgeOnNodeOutputButNotFound, InterruptedException
     {
-        //TODO add support for packet capturing
         int destinationsSize = destinations.size();
         for (int i = 0; i < destinationsSize; i++)
         {
@@ -114,9 +113,8 @@ public abstract class TaskGraphNode
             if (destination == null)
                 throw new ExpectedEdgeOnNodeOutputButNotFound("", getGraphNodeInformation().id, i);
 
-            //TODO fix this aldrabation of destination port
             InfoSecPacket infoSecPacket = new InfoSecPacket(outputs.get(i), graphNodeInformation, destination.getDestination().graphNodeInformation,
-                    i, 0);
+                    i, destination.getDestinationPort());
 
             if (enablePacketCapture)
             {

@@ -31,6 +31,7 @@ public class GraphBuilder
     public void AddEdgeFromNode1ToNode2OutputToInput(long node1Id, long node2Id,
                                                    int outputNumber, int inputNumber) throws GraphBuildingException
     {
+        //TODO fill ports
         PipeGraphEdge graphEdge = new PipeGraphEdgeWithJavaArrayBlockingQueueImplementation();
         TaskGraphNode graphNode1 = graph.get(node1Id);
         TaskGraphNode graphNode2 = graph.get(node2Id);

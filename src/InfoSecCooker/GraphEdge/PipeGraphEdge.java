@@ -12,7 +12,18 @@ public abstract class PipeGraphEdge
 {
     private TaskGraphNode source;
     private TaskGraphNode destination;
-    private boolean countDataTransferred;
+    /**
+     * This represents the number the input to which this pipe is connected.
+     * This is the equivalent to a network port.
+     */
+    private int sourcePort;
+    /**
+     * This represents the number the output to which this pipe is connected.
+     * This is the equivalent to a network port.
+     */
+    private int destinationPort;
+
+    private boolean enableCountDataTransferred;
     private boolean enablePacketCapture; //wireshark ftw ^^
 
     private long dataSentCount;
@@ -30,15 +41,15 @@ public abstract class PipeGraphEdge
         dataReceived = new ArrayList<>();
     }
 
-    public PipeGraphEdge(boolean countDataTransferred, boolean enablePacketCapture)
+    public PipeGraphEdge(boolean enableCountDataTransferred, boolean enablePacketCapture)
     {
-        this.countDataTransferred = countDataTransferred;
+        this.enableCountDataTransferred = enableCountDataTransferred;
         this.enablePacketCapture = enablePacketCapture;
     }
 
     public void sendData(InfoSecPacket infoSecPacket) throws InterruptedException
     {
-        if (countDataTransferred)
+        if (enableCountDataTransferred)
             dataSentCount++;
         if (enablePacketCapture)
             dataSent.add(infoSecPacket);
@@ -51,7 +62,7 @@ public abstract class PipeGraphEdge
     public InfoSecPacket receiveData()
     {
         InfoSecPacket infoSecPacket = receiveDataFromPipe();
-        if (countDataTransferred)
+        if (enableCountDataTransferred)
             dataReceivedCount++;
         if (enablePacketCapture)
             dataReceived.add(infoSecPacket);
@@ -79,6 +90,26 @@ public abstract class PipeGraphEdge
     public void setDestination(TaskGraphNode destination)
     {
         this.destination = destination;
+    }
+
+    public int getSourcePort()
+    {
+        return sourcePort;
+    }
+
+    public void setSourcePort(int sourcePort)
+    {
+        this.sourcePort = sourcePort;
+    }
+
+    public int getDestinationPort()
+    {
+        return destinationPort;
+    }
+
+    public void setDestinationPort(int destinationPort)
+    {
+        this.destinationPort = destinationPort;
     }
 
     public long getDataSentCount()

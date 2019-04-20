@@ -184,6 +184,7 @@ public class FunctionExtractor
             //the new edge is the downstream edge
             //this means the one to the right, where the info goes to in the edge being cut
             //a portuguese analogy would be "a jusante do rio", or in this case "a jusante da edge"
+            //TODO fill ports
             PipeGraphEdge downStreamEdge = new PipeGraphEdgeWithJavaArrayBlockingQueueImplementation();
 
             HashMap<Integer, PipeGraphEdge> upStreamEdgeHashMap = new HashMap<>();
@@ -228,6 +229,7 @@ public class FunctionExtractor
 
             //this means the one to the left, where the info comes from in the edge being cut
             //a portuguese analogy would be "a montante do rio", or in this case "a montante da edge"
+            //TODO fill ports
             PipeGraphEdge upStreamEdge = new PipeGraphEdgeWithJavaArrayBlockingQueueImplementation();
 
             //create new edge (because cutting doesn't actually work like literally cutting on code, we need to make it happen)
