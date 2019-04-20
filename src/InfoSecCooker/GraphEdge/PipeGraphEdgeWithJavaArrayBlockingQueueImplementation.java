@@ -1,6 +1,6 @@
 package InfoSecCooker.GraphEdge;
 
-import InfoSecCooker.Data.InfoSecData;
+import InfoSecCooker.Data.InfoSecPacket;
 
 import java.util.concurrent.ArrayBlockingQueue;
 
@@ -19,16 +19,16 @@ public class PipeGraphEdgeWithJavaArrayBlockingQueueImplementation extends PipeG
     }
 
     @Override
-    public void sendDataOverPipe(InfoSecData infoSecData) throws InterruptedException
+    public void sendDataOverPipe(InfoSecPacket infoSecPacket) throws InterruptedException
     {
-        arrayBlockingQueue.put(infoSecData);
+        arrayBlockingQueue.put(infoSecPacket);
 
     }
 
     @Override
-    public InfoSecData receiveDataFromPipe()
+    public InfoSecPacket receiveDataFromPipe()
     {
-        return (InfoSecData) arrayBlockingQueue.poll();
+        return (InfoSecPacket) arrayBlockingQueue.poll();
     }
 
 }

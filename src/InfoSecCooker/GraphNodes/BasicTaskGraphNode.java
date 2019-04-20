@@ -1,12 +1,13 @@
 package InfoSecCooker.GraphNodes;
 
+import InfoSecCooker.Data.InfoSecData;
+import InfoSecCooker.Data.InfoSecPacket;
 import InfoSecCooker.GraphEdge.PipeGraphEdge;
 import InfoSecCooker.RuntimeExceptions.Collections.CollectionsException;
 import InfoSecCooker.RuntimeExceptions.ExpectedEdgeOnNodeInputButNotFound;
 import InfoSecCooker.RuntimeExceptions.ExpectedEdgeOnNodeOutputButNotFound;
 import InfoSecCooker.RuntimeExceptions.InfoSecCookerRuntimeException;
 import InfoSecCooker.RuntimeExceptions.NullDataReceivedFromGraphNodeAsInput;
-import InfoSecCooker.Data.InfoSecData;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -39,6 +40,7 @@ public abstract class BasicTaskGraphNode extends TaskGraphNode
         state = TaskGraphNodeState.COMPUTING;
         ArrayList<InfoSecData> outputs = computeOutput(inputs);
 
+
         state = TaskGraphNodeState.OUTPUTING;
         outputDataToDestinations(outputs);
 
@@ -46,38 +48,5 @@ public abstract class BasicTaskGraphNode extends TaskGraphNode
         inputs.clear();
     }
 
-    protected ArrayList<InfoSecData> readDataFromSources() throws ExpectedEdgeOnNodeInputButNotFound, NullDataReceivedFromGraphNodeAsInput
-    {
-        ArrayList<InfoSecData> inputs = new ArrayList<>();
-        int sourcesSize = sources.size();
-        for (int i = 0; i < sourcesSize; i++)
-        {
-            PipeGraphEdge source = sources.get(i);
-            if (source == null)
-                throw new ExpectedEdgeOnNodeInputButNotFound("", getGraphNodeInformation().id, i);
-
-            InfoSecData data = source.receiveData();
-            if (data == null)
-                throw new NullDataReceivedFromGraphNodeAsInput("Null data received from graph node", source.getSource().getGraphNodeInformation(), graphNodeInformation);
-
-            inputs.add(data);
-        }
-
-        return inputs;
-    }
-
-    protected void outputDataToDestinations(ArrayList<InfoSecData> outputs) throws ExpectedEdgeOnNodeOutputButNotFound, InterruptedException
-    {
-        int destinationsSize = destinations.size();
-        for (int i = 0; i < destinationsSize; i++)
-        {
-            PipeGraphEdge destination = destinations.get(i);
-            if (destination == null)
-                throw new ExpectedEdgeOnNodeOutputButNotFound("", getGraphNodeInformation().id, i);
-
-            destination.sendData(outputs.get(i));
-        }
-    }
-
-    public abstract ArrayList<InfoSecData> computeOutput(ArrayList<InfoSecData> infoSecDataArrayList) throws CollectionsException;
+    public abstract ArrayList<InfoSecData> computeOutput(ArrayList<InfoSecData> infoSecPacketArrayList) throws CollectionsException;
 }

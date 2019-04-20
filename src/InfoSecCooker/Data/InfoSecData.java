@@ -4,7 +4,8 @@ import java.io.Serializable;
 
 public abstract class InfoSecData
 {
-    Serializable dataObj;
+    private Serializable dataObj;
+
 
     public InfoSecData(Serializable dataObj)
     {

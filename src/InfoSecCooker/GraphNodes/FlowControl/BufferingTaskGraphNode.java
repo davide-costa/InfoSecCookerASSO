@@ -1,9 +1,10 @@
 package InfoSecCooker.GraphNodes.FlowControl;
 
+import InfoSecCooker.Data.InfoSecData;
 import InfoSecCooker.GraphEdge.PipeGraphEdge;
 import InfoSecCooker.GraphNodes.BasicTaskGraphNode;
 import InfoSecCooker.GraphNodes.GraphNodeInformation;
-import InfoSecCooker.Data.InfoSecData;
+import InfoSecCooker.Data.InfoSecPacket;
 import InfoSecCooker.RuntimeExceptions.Collections.CollectionsException;
 import InfoSecCooker.RuntimeExceptions.ExpectedEdgeOnNodeInputButNotFound;
 import InfoSecCooker.RuntimeExceptions.InfoSecCookerRuntimeException;
@@ -46,7 +47,7 @@ public class BufferingTaskGraphNode extends BasicTaskGraphNode
     }
 
     @Override
-    public ArrayList<InfoSecData> computeOutput(ArrayList<InfoSecData> infoSecDataArrayList) throws CollectionsException
+    public ArrayList<InfoSecData> computeOutput(ArrayList<InfoSecData> infoSecPacketArrayList) throws CollectionsException
     {
         return null;
     }

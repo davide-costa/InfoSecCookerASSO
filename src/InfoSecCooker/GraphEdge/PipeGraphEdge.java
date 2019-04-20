@@ -1,7 +1,7 @@
 package InfoSecCooker.GraphEdge;
 
+import InfoSecCooker.Data.InfoSecPacket;
 import InfoSecCooker.GraphNodes.TaskGraphNode;
-import InfoSecCooker.Data.InfoSecData;
 
 import java.util.ArrayList;
 
@@ -17,8 +17,8 @@ public abstract class PipeGraphEdge
 
     private long dataSentCount;
     private long dataReceivedCount;
-    private ArrayList<InfoSecData> dataSent;
-    private ArrayList<InfoSecData> dataReceived;
+    private ArrayList<InfoSecPacket> dataSent;
+    private ArrayList<InfoSecPacket> dataReceived;
 
 
     public PipeGraphEdge()
@@ -36,30 +36,30 @@ public abstract class PipeGraphEdge
         this.enablePacketCapture = enablePacketCapture;
     }
 
-    public void sendData(InfoSecData infoSecData) throws InterruptedException
+    public void sendData(InfoSecPacket infoSecPacket) throws InterruptedException
     {
         if (countDataTransferred)
             dataSentCount++;
         if (enablePacketCapture)
-            dataSent.add(infoSecData);
+            dataSent.add(infoSecPacket);
 
-        sendDataOverPipe(infoSecData);
+        sendDataOverPipe(infoSecPacket);
     }
 
-    public abstract void sendDataOverPipe(InfoSecData infoSecData) throws InterruptedException;
+    public abstract void sendDataOverPipe(InfoSecPacket infoSecPacket) throws InterruptedException;
 
-    public InfoSecData receiveData()
+    public InfoSecPacket receiveData()
     {
-        InfoSecData infoSecData = receiveDataFromPipe();
+        InfoSecPacket infoSecPacket = receiveDataFromPipe();
         if (countDataTransferred)
             dataReceivedCount++;
         if (enablePacketCapture)
-            dataReceived.add(infoSecData);
+            dataReceived.add(infoSecPacket);
 
-        return infoSecData;
+        return infoSecPacket;
     }
 
-    public abstract InfoSecData receiveDataFromPipe();
+    public abstract InfoSecPacket receiveDataFromPipe();
 
     public TaskGraphNode getSource()
     {
@@ -91,12 +91,12 @@ public abstract class PipeGraphEdge
         return dataReceivedCount;
     }
 
-    public ArrayList<InfoSecData> getDataSent()
+    public ArrayList<InfoSecPacket> getDataSent()
     {
         return dataSent;
     }
 
-    public ArrayList<InfoSecData> getDataReceived()
+    public ArrayList<InfoSecPacket> getDataReceived()
     {
         return dataReceived;
     }
