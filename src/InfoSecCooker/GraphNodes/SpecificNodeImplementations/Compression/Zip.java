@@ -16,7 +16,7 @@ public class Zip extends CompressionNodeTask
     }
 
     @Override
-    public InfoSecData computeOutput(ArrayList<InfoSecData> infoSecDataArrayList) throws CollectionsException
+    public ArrayList<InfoSecData> computeOutput(ArrayList<InfoSecData> infoSecDataArrayList) throws CollectionsException
     {
         //TODO
         return null;

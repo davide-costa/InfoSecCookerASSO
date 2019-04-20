@@ -56,6 +56,8 @@ public class GraphBuilder
         if (sourceEdgeAlreadyExistant != null)
             throw new AttemptingToConnectOutputAlreadyConnected(node2Id, inputNumber);
 
+        //TODO check compatibility between the nodes connected
+
         //if all error checks have passed, connect the nodes to the edge and the edge to the nodes
         graphNode1.getDestinations().put(outputNumber, graphEdge);
         graphNode2.getSources().put(inputNumber, graphEdge);

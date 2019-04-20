@@ -33,6 +33,22 @@ public abstract class BasicTaskGraphNode extends TaskGraphNode
      */
     public void tick() throws InfoSecCookerRuntimeException, InterruptedException
     {
+        state = TaskGraphNodeState.WAITING_FOR_INPUTS;
+        ArrayList<InfoSecData> inputs = readDataFromSources();
+
+        state = TaskGraphNodeState.COMPUTING;
+        ArrayList<InfoSecData> outputs = computeOutput(inputs);
+
+        state = TaskGraphNodeState.OUTPUTING;
+        outputDataToDestinations(outputs);
+
+        state = TaskGraphNodeState.IDLING;
+        inputs.clear();
+    }
+
+    protected ArrayList<InfoSecData> readDataFromSources() throws ExpectedEdgeOnNodeInputButNotFound, NullDataReceivedFromGraphNodeAsInput
+    {
+        ArrayList<InfoSecData> inputs = new ArrayList<>();
         int sourcesSize = sources.size();
         for (int i = 0; i < sourcesSize; i++)
         {
@@ -47,8 +63,11 @@ public abstract class BasicTaskGraphNode extends TaskGraphNode
             inputs.add(data);
         }
 
-        output = computeOutput(inputs);
+        return inputs;
+    }
 
+    protected void outputDataToDestinations(ArrayList<InfoSecData> outputs) throws ExpectedEdgeOnNodeOutputButNotFound, InterruptedException
+    {
         int destinationsSize = destinations.size();
         for (int i = 0; i < destinationsSize; i++)
         {
@@ -56,9 +75,9 @@ public abstract class BasicTaskGraphNode extends TaskGraphNode
             if (destination == null)
                 throw new ExpectedEdgeOnNodeOutputButNotFound("", getGraphNodeInformation().id, i);
 
-            destination.sendData(output);
+            destination.sendData(outputs.get(i));
         }
     }
 
-    public abstract InfoSecData computeOutput(ArrayList<InfoSecData> infoSecDataArrayList) throws CollectionsException;
+    public abstract ArrayList<InfoSecData> computeOutput(ArrayList<InfoSecData> infoSecDataArrayList) throws CollectionsException;
 }

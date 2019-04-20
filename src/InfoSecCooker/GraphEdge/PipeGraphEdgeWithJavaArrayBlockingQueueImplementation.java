@@ -19,13 +19,14 @@ public class PipeGraphEdgeWithJavaArrayBlockingQueueImplementation extends PipeG
     }
 
     @Override
-    public void sendData(InfoSecData infoSecData) throws InterruptedException
+    public void sendDataOverPipe(InfoSecData infoSecData) throws InterruptedException
     {
         arrayBlockingQueue.put(infoSecData);
+
     }
 
     @Override
-    public InfoSecData receiveData()
+    public InfoSecData receiveDataFromPipe()
     {
         return (InfoSecData) arrayBlockingQueue.poll();
     }

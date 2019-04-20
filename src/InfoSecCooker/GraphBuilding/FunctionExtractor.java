@@ -2,11 +2,12 @@ package InfoSecCooker.GraphBuilding;
 
 import InfoSecCooker.GraphEdge.PipeGraphEdge;
 import InfoSecCooker.GraphEdge.PipeGraphEdgeWithJavaArrayBlockingQueueImplementation;
-import InfoSecCooker.GraphNodes.ComplexTaskGraphNode;
-import InfoSecCooker.GraphNodes.ShortCircuitNodeTask;
+import InfoSecCooker.GraphNodes.FlowControl.ComplexTaskGraphNode;
+import InfoSecCooker.GraphNodes.FlowControl.ShortCircuitNodeTask;
 import InfoSecCooker.GraphNodes.TaskGraphNode;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 /**
  * This class implements necessary logic to perform "extract function" from the graph already built.
@@ -24,23 +25,20 @@ public class FunctionExtractor
     //TODO the aux methods of this method need heavy code reading and debugging because it is difficult up logic
     public ComplexTaskGraphNode getComplexGraphNode()
     {
-        ArrayList<TaskGraphNode> sources = new ArrayList<>();
-        ArrayList<TaskGraphNode> sinks = new ArrayList<>();
-
-        findSourceNodes(sources);
-        findSinkNodes(sinks);
+        ArrayList<TaskGraphNode> sources = findSourceNodes();
+        ArrayList<TaskGraphNode> sinks = findSinkNodes();
 
         //Get source edges
-        ArrayList<PipeGraphEdge> sourceEdges = getSourceEdges(sources);
+        HashMap<Integer, PipeGraphEdge> sourceEdges = getSourceEdges(sources);
 
         //Get destination edges
-        ArrayList<PipeGraphEdge> destinationEdges = getDestinationEdges(sinks);
+        HashMap<Integer, PipeGraphEdge> destinationEdges = getDestinationEdges(sinks);
 
         //Find entrance edges
-        ArrayList<PipeGraphEdge> entranceEdges = getEntranceEdges(sources);
+        HashMap<Integer, PipeGraphEdge> entranceEdges = getEntranceEdges(sources);
 
         //Find outgoing edges
-        ArrayList<PipeGraphEdge> outgoingEdges = getDestinationEdges(sources);
+        HashMap<Integer, PipeGraphEdge> outgoingEdges = getDestinationEdges(sources);
 
 
         //Cut entrance edges and connect them through ShortCircuitNodeTask class instances
@@ -55,31 +53,39 @@ public class FunctionExtractor
                 entranceShortCircuitNodes, exitanceShortCircuitNodes);
     }
 
-    private void findSinkNodes(ArrayList<TaskGraphNode> sources)
+    private ArrayList<TaskGraphNode> findSinkNodes()
     {
+        ArrayList<TaskGraphNode> sinks = new ArrayList<>();
         for (TaskGraphNode node : nodes)
         {
-            ArrayList<PipeGraphEdge> destinationEdges = node.getDestinations();
-            for (PipeGraphEdge sourceEdge : destinationEdges)
+            HashMap<Integer, PipeGraphEdge> destinationEdges = node.getDestinations();
+            int destinationEdgesSize = destinationEdges.size();
+            for (int i = 0; i < destinationEdgesSize; i++)
             {
-                TaskGraphNode destinationNode = sourceEdge.getDestination();
+                PipeGraphEdge destinationEdge = destinationEdges.get(i);
+                TaskGraphNode destinationNode = destinationEdge.getDestination();
                 //TODO not sure if this works without an implementation of .equals on class TaskGraphNode
                 //this allows to check if the node is connected backwards to the outside of this ComplexTaskGraphNode
                 //if yes, then it is a source node
                 if (!nodes.contains(destinationNode))
-                    sources.add(destinationNode);
+                    sinks.add(destinationNode);
 
             }
         }
+
+        return sinks;
     }
 
-    private void findSourceNodes(ArrayList<TaskGraphNode> sources)
+    private ArrayList<TaskGraphNode> findSourceNodes()
     {
+        ArrayList<TaskGraphNode> sources = new ArrayList<>();
         for (TaskGraphNode node : nodes)
         {
-            ArrayList<PipeGraphEdge> sourceEdges = node.getSources();
-            for (PipeGraphEdge sourceEdge : sourceEdges)
+            HashMap<Integer, PipeGraphEdge> sourceEdges = node.getSources();
+            int sourceEdgesSize = sourceEdges.size();
+            for (int i = 0; i < sourceEdgesSize; i++)
             {
+                PipeGraphEdge sourceEdge = sourceEdges.get(i);
                 TaskGraphNode sourceNode = sourceEdge.getSource();
                 //TODO not sure if this works without an implementation of .equals on class TaskGraphNode
                 //this allows to check if the node is connected backwards to the outside of this ComplexTaskGraphNode
@@ -89,39 +95,71 @@ public class FunctionExtractor
 
             }
         }
+
+        return sources;
     }
 
-    private ArrayList<PipeGraphEdge> getSourceEdges(ArrayList<TaskGraphNode> sources)
+    private HashMap<Integer, PipeGraphEdge> convertArrayListOfPipeGraphEdgeToHashMap(ArrayList<PipeGraphEdge> pipeGraphEdges)
+    {
+        HashMap<Integer, PipeGraphEdge> pipeGraphEdgeHashMap = new HashMap<>();
+        int i = 0;
+        for (PipeGraphEdge pipeGraphEdge : pipeGraphEdges)
+        {
+            pipeGraphEdgeHashMap.put(i, pipeGraphEdge);
+            i++;
+        }
+
+        return pipeGraphEdgeHashMap;
+    }
+
+    private HashMap<Integer, PipeGraphEdge> getSourceEdges(ArrayList<TaskGraphNode> sourceNodes)
     {
         ArrayList<PipeGraphEdge> sourceEdges = new ArrayList<>();
-        for (TaskGraphNode node : sources)
+        int sourcesNodesSize = sourceNodes.size();
+        for (int i = 0; i < sourcesNodesSize; i++)
         {
-            sourceEdges.addAll(node.getSources());
+            TaskGraphNode node = sourceNodes.get(i);
+            HashMap<Integer, PipeGraphEdge> sourcesOfNode = node.getSources();
+            int sourcesSize = sourcesOfNode.size();
+            for (int j = 0; j < sourcesSize; j++)
+            {
+                sourceEdges.add(sourcesOfNode.get(j));
+            }
         }
-        return sourceEdges;
+        return convertArrayListOfPipeGraphEdgeToHashMap(sourceEdges);
     }
 
-    private ArrayList<PipeGraphEdge> getEntranceEdges(ArrayList<TaskGraphNode> sources)
+    private HashMap<Integer, PipeGraphEdge> getEntranceEdges(ArrayList<TaskGraphNode> sources)
     {
-        ArrayList<PipeGraphEdge> entranceEdges = getSourceEdges(sources);
+        HashMap<Integer, PipeGraphEdge> entranceEdges = getSourceEdges(sources);
         return entranceEdges;
     }
 
-    private ArrayList<PipeGraphEdge> getDestinationEdges(ArrayList<TaskGraphNode> sinks)
+    private HashMap<Integer, PipeGraphEdge> getDestinationEdges(ArrayList<TaskGraphNode> sinks)
     {
         ArrayList<PipeGraphEdge> destinationEdges = new ArrayList<>();
-        for (TaskGraphNode node : sinks)
+        int sinksSize = sinks.size();
+        for (int i = 0; i < sinksSize; i++)
         {
-            destinationEdges.addAll(node.getDestinations());
+            TaskGraphNode node = sinks.get(i);
+            HashMap<Integer, PipeGraphEdge> destinationsOfNode = node.getDestinations();
+            int destinationsSize = destinationsOfNode.size();
+            for (int j = 0; j < destinationsSize; j++)
+            {
+                destinationEdges.add(destinationsOfNode.get(j));
+            }
         }
-        return destinationEdges;
+        return convertArrayListOfPipeGraphEdgeToHashMap(destinationEdges);
     }
 
-    private ArrayList<ShortCircuitNodeTask> getEntranceShortCircuitNodes(ArrayList<PipeGraphEdge> entranceEdges)
+    private ArrayList<ShortCircuitNodeTask> getEntranceShortCircuitNodes(HashMap<Integer, PipeGraphEdge> entranceEdges)
     {
         ArrayList<ShortCircuitNodeTask> entranceShortCircuitNodes = new ArrayList<>();
-        for (PipeGraphEdge entranceEdge : entranceEdges)
+        int entrancesEdgesSize = entranceEdges.size();
+        for (int i = 0; i < entrancesEdgesSize; i++)
         {
+            PipeGraphEdge entranceEdge = entranceEdges.get(i);
+
             //get the node that is fed data through this edge
             //this node belongs to the FunctionExtractor being built
             TaskGraphNode destinationNodeOfCurrentEntranceEdge = entranceEdge.getDestination();
@@ -148,13 +186,13 @@ public class FunctionExtractor
             //a portuguese analogy would be "a jusante do rio", or in this case "a jusante da edge"
             PipeGraphEdge downStreamEdge = new PipeGraphEdgeWithJavaArrayBlockingQueueImplementation();
 
-            ArrayList<PipeGraphEdge> upStreamEdgeArray = new ArrayList<>();
-            upStreamEdgeArray.add(upStreamEdge);
-            ArrayList<PipeGraphEdge> downStreamEdgeArray = new ArrayList<>();
-            upStreamEdgeArray.add(downStreamEdge);
+            HashMap<Integer, PipeGraphEdge> upStreamEdgeHashMap = new HashMap<>();
+            upStreamEdgeHashMap.put(0, upStreamEdge);
+            HashMap<Integer, PipeGraphEdge> downStreamEdgeHashMap = new HashMap<>();
+            downStreamEdgeHashMap.put(0, downStreamEdge);
 
             //TODO fix this aldrabation of null
-            ShortCircuitNodeTask shortCircuitNode = new ShortCircuitNodeTask(null, upStreamEdgeArray, downStreamEdgeArray);
+            ShortCircuitNodeTask shortCircuitNode = new ShortCircuitNodeTask(null, upStreamEdgeHashMap, downStreamEdgeHashMap);
 
             //Reconnect graph edges appropriately
             //lets reconnect them from upstream to downstream (left to right)
@@ -172,11 +210,15 @@ public class FunctionExtractor
         return entranceShortCircuitNodes;
     }
 
-    private ArrayList<ShortCircuitNodeTask> getExitanceShortCircuitNodes(ArrayList<PipeGraphEdge> outgoingEdges)
+    private ArrayList<ShortCircuitNodeTask> getExitanceShortCircuitNodes(HashMap<Integer, PipeGraphEdge> outgoingEdges)
     {
         ArrayList<ShortCircuitNodeTask> exitanceShortCircuitNodes = new ArrayList<>();
-        for (PipeGraphEdge outgoingEdge : outgoingEdges)
+
+        int outgoingEdgesSize = outgoingEdges.size();
+        for (int i = 0; i < outgoingEdgesSize; i++)
         {
+            PipeGraphEdge outgoingEdge = outgoingEdges.get(i);
+
             //get the node that outputs data through this edge
             //this node belongs to the FunctionExtractor being built
             TaskGraphNode sourceNodeOfCurrentOutgoingEdge = outgoingEdge.getSource();
@@ -195,13 +237,13 @@ public class FunctionExtractor
             //let the downstream edge be the original one
             PipeGraphEdge downStreamEdge = outgoingEdge;
 
-            ArrayList<PipeGraphEdge> upStreamEdgeArray = new ArrayList<>();
-            upStreamEdgeArray.add(upStreamEdge);
-            ArrayList<PipeGraphEdge> downStreamEdgeArray = new ArrayList<>();
-            upStreamEdgeArray.add(downStreamEdge);
+            HashMap<Integer, PipeGraphEdge> upStreamEdgeHashMap = new HashMap<>();
+            upStreamEdgeHashMap.put(0, upStreamEdge);
+            HashMap<Integer, PipeGraphEdge> downStreamEdgeHashMap = new HashMap<>();
+            downStreamEdgeHashMap.put(0, downStreamEdge);
 
             //TODO fix this aldrabation of null
-            ShortCircuitNodeTask shortCircuitNode = new ShortCircuitNodeTask(null, upStreamEdgeArray, downStreamEdgeArray);
+            ShortCircuitNodeTask shortCircuitNode = new ShortCircuitNodeTask(null, upStreamEdgeHashMap, downStreamEdgeHashMap);
 
             //Reconnect graph edges appropriately
             //lets reconnect them from upstream to downstream (left to right)

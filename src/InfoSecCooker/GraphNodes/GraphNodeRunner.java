@@ -13,15 +13,25 @@ import InfoSecCooker.RuntimeExceptions.NullDataReceivedFromGraphNodeAsInput;
  */
 public class GraphNodeRunner implements Runnable
 {
+    /**
+     * The state is IDLING the default state, when the GraphNodeRunner has just been created.
+     * The task remains in state IDLING while the thread as not yet been started (i.e., the run method has not yet been executed).
+     * When it is waiting for time to pass to to implement the cycles logic based on time and it is sleeping, the state is SLEEPING.
+     * When it has called the function tick of the TaskGraphNode and it is waiting for the function to return, the state is WORKING. For more specific state information, the state on the TaskGraphNode should be checked.
+     */
+    enum GraphNodeRunnerState {IDLING, SLEEPING, WORKING}
+
     TaskGraphNode taskGraphNode;
     Object tickNotificationMonitor;
     int tickInterval;
     boolean tickImmediatelyAfterLaunch;
     boolean subtractExecutionTimeToSleepTime;
+    GraphNodeRunnerState state;
 
     public GraphNodeRunner(TaskGraphNode taskGraphNode, Object tickNotificationMonitor, int tickInterval)
     {
         this(taskGraphNode, tickNotificationMonitor, tickInterval, true, true);
+        state = GraphNodeRunnerState.IDLING;
     }
 
     public GraphNodeRunner(TaskGraphNode taskGraphNode, Object tickNotificationMonitor, int tickInterval,
@@ -55,6 +65,7 @@ public class GraphNodeRunner implements Runnable
             {
                 if (!tickImmediatelyAfterLaunch)
                 {
+                    state = GraphNodeRunnerState.SLEEPING;
                     Thread.sleep(nextSleepInterval);
                     nextSleepInterval = tickInterval;
                 }
@@ -65,6 +76,7 @@ public class GraphNodeRunner implements Runnable
 
                 try
                 {
+                    state = GraphNodeRunnerState.WORKING;
                     taskGraphNode.tick();
                 } catch (InfoSecCookerRuntimeException e)
                 {
@@ -86,6 +98,7 @@ public class GraphNodeRunner implements Runnable
 
                 if (tickImmediatelyAfterLaunch)
                 {
+                    state = GraphNodeRunnerState.SLEEPING;
                     Thread.sleep(nextSleepInterval);
                     nextSleepInterval = tickInterval;
 

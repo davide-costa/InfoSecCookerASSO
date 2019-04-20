@@ -20,7 +20,7 @@ public class ToFile extends BasicTaskGraphNode
     }
 
     @Override
-    public InfoSecData computeOutput(ArrayList<InfoSecData> infoSecDataArrayList) throws CollectionsException
+    public ArrayList<InfoSecData> computeOutput(ArrayList<InfoSecData> infoSecDataArrayList) throws CollectionsException
     {
 
         return null;

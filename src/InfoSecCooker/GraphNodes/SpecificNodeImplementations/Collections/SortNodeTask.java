@@ -6,6 +6,7 @@ import InfoSecCooker.GraphNodes.GraphNodeInformation;
 import InfoSecCooker.Outputs.CollectionData;
 import InfoSecCooker.Outputs.InfoSecData;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -19,7 +20,7 @@ public class SortNodeTask extends CollectionsTaskGraphNode
     }
 
     @Override
-    public InfoSecData computeOutput(ArrayList<InfoSecData> infoSecDataArrayList) throws CollectionsException
+    public ArrayList<InfoSecData> computeOutput(ArrayList<InfoSecData> infoSecDataArrayList) throws CollectionsException
     {
         InfoSecData infoSecData = infoSecDataArrayList.get(0);
         if (!(infoSecData instanceof CollectionData))
@@ -28,7 +29,9 @@ public class SortNodeTask extends CollectionsTaskGraphNode
         CollectionData collectionData = (CollectionData) infoSecData;
         List collection = collectionData.getCollection();
         Collections.sort(collection);
+        ArrayList<InfoSecData> data = new ArrayList<>();
+        data.add(new CollectionData(collection));
 
-        return new CollectionData(collection);
+        return data;
     }
 }
