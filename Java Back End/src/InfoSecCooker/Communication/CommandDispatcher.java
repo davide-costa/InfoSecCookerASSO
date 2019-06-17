@@ -218,7 +218,12 @@ public class CommandDispatcher
         else if (controlMessage instanceof EndSessionCommandMsg)
         {
             String frontEndData = ((EndSessionCommandMsg) controlMessage).getFrontEndData();
-            saveSessionDetails(frontEndData);
+            boolean result = saveSessionDetails(frontEndData);
+
+            if (result)
+                return new InfoSecCommandResponseMsg(true, "Information saved successfully");
+            else
+                return new InfoSecCommandResponseMsg(true, "Error saving information");
         }
 
         return new UnRecognizedCommandResponseMsg("");
@@ -235,7 +240,7 @@ public class CommandDispatcher
         return new UnRecognizedGETRequestResponseMsg();
     }
 
-    private void saveSessionDetails(String frontEndData)
+    private boolean saveSessionDetails(String frontEndData)
     {
         SessionData sessionData = new SessionData(frontEndData, graphBuildingCommandMsgs);
         String sessionDataStr = JsonWriter.objectToJson(sessionData);
@@ -245,10 +250,12 @@ public class CommandDispatcher
             writer.write(sessionDataStr);
 
             writer.close();
+
+            return true;
         }
         catch (IOException e)
         {
-            e.printStackTrace();
+            return false;
         }
     }
 }
