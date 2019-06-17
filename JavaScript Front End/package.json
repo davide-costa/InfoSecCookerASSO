@@ -9,13 +9,16 @@
     "interactjs": "^1.4.0-rc.13",
     "jointjs": "^3.0.0",
     "jquery": "^3.4.1",
+    "jquery-confirm": "^3.3.4",
     "net-socket": "^1.1.0",
     "react": "^16.8.6",
     "react-dom": "^16.8.6",
     "react-script-tag": "^1.1.2",
     "react-scripts": "3.0.1",
     "websocket": "^1.0.28",
-    "xmlhttprequest": "^1.8.0"
+    "xmlhttprequest": "^1.8.0",
+    "lodash": "latest",
+    "backbone": "latest"
   },
   "scripts": {
     "start": "react-scripts start",

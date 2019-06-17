@@ -322,30 +322,14 @@ class GraphCommunication
 
     sendGetInformationRequest()
     {
+        let self = this;
         let XMLHttpRequest = require("xmlhttprequest").XMLHttpRequest;
         let xhttp = new XMLHttpRequest();
         xhttp.onreadystatechange = function()
         {
             if (this.readyState == 4 && this.status == 200)
             {
-                console.log("handleNewInformationMessage");
-                console.log(this.responseText.toString());
-
-                let newMessageJson = JSON.parse(this.responseText.toString());
-                let jsonResponseType = newMessageJson['@type'];
-                if(!jsonResponseType)
-                    return;
-
-                switch (jsonResponseType)
-                {
-                    case "InfoSecCooker.Communication.Messages.InformationMessages.InfoSecFullReportInformationMessage":
-                        let infoSecFullReportInformationMessage = new InfoSecFullReportInformationMessage(newMessageJson);
-                        //TODO STUFF na GUI
-                        console.log("infoSecFullReportInformationMessage");
-                        break;
-                    default:
-                        break;
-                }
+                self.handleNewInformationMessage(this.responseText);
             }
         };
         xhttp.open("POST", this.baseURL + "getInformation", true);
@@ -353,12 +337,10 @@ class GraphCommunication
         xhttp.send("sessionId=" + this.sessionId);
     }
 
+
+
     handleNewInformationMessage(data)
     {
-        //TODO
-        console.log("handleNewInformationMessage");
-        console.log(data.toString());
-
         let newMessageJson = JSON.parse(data.toString());
         let jsonResponseType = newMessageJson['@type'];
         if(!jsonResponseType)
@@ -368,8 +350,7 @@ class GraphCommunication
         {
             case "InfoSecCooker.Communication.Messages.InformationMessages.InfoSecFullReportInformationMessage":
                 let infoSecFullReportInformationMessage = new InfoSecFullReportInformationMessage(newMessageJson);
-                //TODO STUFF na GUI
-                console.log("infoSecFullReportInformationMessage");
+                this.gui.onNewGraphRunningInformation(infoSecFullReportInformationMessage);
                 break;
             default:
                 break;

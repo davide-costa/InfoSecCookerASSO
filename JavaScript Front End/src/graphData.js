@@ -6,7 +6,7 @@ class GraphData
     {
         this.nodesInfo = new Array();
 
-        //associates edges and nodes connected, cat style association
+        //associates edges and nodes connected
         this.edgeBackendIds = new Array();
         this.edgeFrontendIds = new Array();
         this.node1OfEdge = new Array();

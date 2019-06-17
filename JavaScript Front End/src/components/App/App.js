@@ -1,9 +1,10 @@
 import React, { Component } from 'react';
 import './App.css';
+import 'jquery-confirm';
 import '../../../node_modules/jquery/dist/jquery.js';
-import '../../../node_modules/lodash/lodash.js';
-import '../../../node_modules/backbone/backbone.js';
-import '../../../node_modules/jointjs/dist/joint.js';
+import "lodash";
+import "backbone";
+import "jointjs/dist/joint.css";
 import {GraphCommunication} from "../../communication";
 import {GETAvailableTasksList} from "../../Messages/GETMessages/GETAvailableTasksList";
 import {AddSourceTaskCommandMsg} from "../../Messages/CommandMessages/GraphBuilding/AddSourceTaskCommandMsg";
@@ -15,6 +16,10 @@ import {StartNewGraphCommandMsg} from "../../Messages/CommandMessages/GraphBuild
 import {LaunchGraphCommandMsg} from "../../Messages/CommandMessages/GraphBuilding/LaunchGraphCommandMsg";
 import {PauseGraphCommandMsg} from "../../Messages/CommandMessages/GraphRunning/PauseGraphCommandMsg";
 import {StopAndResetGraphCommandMsg} from "../../Messages/CommandMessages/GraphRunning/StopAndResetGraphCommandMsg";
+import {ResumeGraphCommandMsg} from "../../Messages/CommandMessages/GraphRunning/ResumeGraphCommandMsg";
+import {SetBufferSizeOfTaskCommandMsg} from "../../Messages/CommandMessages/GraphBuilding/SetBufferSizeOfTaskCommandMsg";
+import {SetTickIntervalOfTaskCommandMsg} from "../../Messages/CommandMessages/GraphBuilding/SetTickIntervalOfTaskCommandMsg";
+import {SetNumberOfCyclesOfTaskCommandMsg} from "../../Messages/CommandMessages/GraphBuilding/SetNumberOfCyclesOfTaskCommandMsg";
 const joint = require('jointjs');
 const $ = require('jquery');
 
@@ -27,8 +32,10 @@ export default class App extends Component {
       paper: {},
       nodesList: [],
       nodes: [],
+      nodeStates: [],
       edges: [],
       currTemporaryId: 0,
+      infoBox: "",
     }
 
     this.communication = new GraphCommunication("127.0.0.1", 4550, this);
@@ -44,11 +51,6 @@ export default class App extends Component {
     this.onPlay = this.onPlay.bind(this);
     this.onPause = this.onPause.bind(this);
     this.onStop = this.onStop.bind(this);
-  }
-
-  //TODO: load to state here
-  componentWillMount() {
-
   }
 
   getTasksNodes()
@@ -109,6 +111,8 @@ export default class App extends Component {
     }
     else
       this.communication.sendExecuteCommandRequest(new AddTaskCommandMsg(taskName, taskTemporaryId));
+
+
   }
 
   onDragOver(e) {
@@ -151,10 +155,11 @@ export default class App extends Component {
     const nrInputs = nodeInfo[1];
     const nrOutputs = nodeInfo[2];
 
+    this.state.nodeStates.push("");
     let node = new joint.shapes.devs.Model({
       backendId: taskTemporaryId,
       position: { x: coords.x - 160, y: coords.y - 60 },
-      size: { width: 80, height: 100 },
+      size: { width: 120, height: 150 },
       ports: {
         groups: {
           in: {
@@ -175,11 +180,13 @@ export default class App extends Component {
         }
       },
       attrs: {
-        ".label": { text: name, "ref-x": 0.5, "ref-y": 0.2 },
+        ".label": { text: name + "\n\t" + this.state.nodeStates[this.state.nodeStates.length - 1], "ref-x": 0.5, "ref-y": 0.2 },
         rect: { fill: "#2ECC71" }
       }
     });
 
+    console.log(this.state.nodeStates);
+    //node.attributes.attrs[".label"].text = "SHA\nSLEEPING\nFILENAME"
     for (let i = 0; i < nrInputs; i++) {
       node.addInPort("I" + (i + 1));
     }
@@ -247,14 +254,31 @@ export default class App extends Component {
         return magnet.getAttribute("magnet") !== "passive";
       }
     });
-    //console.log(graphVar)
+
+      paperVar.on('element:pointerdblclick', function(elementView)
+      {
+          let bufferSize = prompt("Please enter buffer size (empty for ignore)").toString();
+          let tickInterval = prompt("Please enter tick interval (empty for ignore)").toString();
+          let numberOfCycles = prompt("Please enter the number of node cycles (0 for infinite)").toString();
+          let backendId = elementView.model.attributes.backendId;
+
+          if(bufferSize.length > 0)
+              self.communication.sendExecuteCommandRequest(new SetBufferSizeOfTaskCommandMsg(backendId, parseInt(bufferSize)));
+
+          if(tickInterval.length > 0)
+            self.communication.sendExecuteCommandRequest(new SetTickIntervalOfTaskCommandMsg(backendId, parseInt(tickInterval)));
+
+          if(numberOfCycles.length > 0)
+            self.communication.sendExecuteCommandRequest(new SetNumberOfCyclesOfTaskCommandMsg(backendId, parseInt(numberOfCycles)));
+      });
+
     this.setState({
       graph: graphVar,
       paper: paperVar,
     })
 
     $(window).resize(function() {
-      paperVar.setDimensions(window.innerWidth - offsetWidth, window.innerHeight);
+      paperVar.setDimensions(window.innerWidth - (25 * window.innerWidth) / 100, window.innerHeight);
     });
   }
 
@@ -303,6 +327,8 @@ export default class App extends Component {
   }
 
   onResume() {
+    this.communication.sendExecuteCommandRequest(new ResumeGraphCommandMsg());
+
     document.getElementById('resume').style.display = 'none';
     document.getElementById('pause').style.display = 'inline';
     document.getElementById('stop').style.display = 'inline';
@@ -332,12 +358,44 @@ export default class App extends Component {
       return;
 
     this.communication.sendExecuteCommandRequest(new LaunchGraphCommandMsg());
+    this.communication.startReceivingGraphRunningInformation(500);
 
     //update frontend
     document.getElementById('messageBox').style.display = 'block';
     document.getElementById('pause').style.display = 'inline';
     document.getElementById('stop').style.display = 'inline';
     document.getElementById('play').style.display = 'none';
+  }
+
+  onNewGraphRunningInformation(infoSecFullReportInformationMessage)
+  {
+    /*
+    let stringToDisplay = infoSecFullReportInformationMessage.taskNodesIncomingAndOutgoingPacketRegistry.toString() + "\n" +
+      infoSecFullReportInformationMessage.taskNodeStates.toString() + "\n" +
+      infoSecFullReportInformationMessage.tickRegistrySinceEver.toString() + "\n" +
+      infoSecFullReportInformationMessage.tickRegistrySinceLastUpdate.toString() + "\n";*/
+
+    let nodesIdsArray = infoSecFullReportInformationMessage.taskNodeStates["@keys"];
+    let nodesStatesArray = infoSecFullReportInformationMessage.taskNodeStates["@items"];
+    for(let i = 0; i < nodesIdsArray.length; i++)
+    {
+      let nodeId = nodesIdsArray[i];
+      let newNodes = this.state.nodes;
+      let newNodeStates = this.state.nodeStates;
+      for(let j = 0; j < newNodes.length; j++)
+      {
+       if(newNodes[j].attributes.backendId == nodeId)
+       {
+         let labelSplitted = newNodes[j].attributes.attrs[".label"].text.toString().split("\t\n");
+         this.state.nodes[j].attributes.attrs[".label"].text = labelSplitted[0] + "\t\n" + nodesStatesArray[i];
+       }
+      }
+    }
+
+    /*let newInfoBoxString = (this.state.infoBox + stringToDisplay).toString();
+    this.setState({
+      infoBox: newInfoBoxString
+    });*/
   }
 
   onEndSession() {
