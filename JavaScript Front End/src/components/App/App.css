@@ -1,0 +1,170 @@
+.App {
+  text-align: center;
+  width: 95%;
+}
+
+.container-drag {
+  text-align: center;
+}
+
+.wip {
+  position: absolute;
+  width: 10vw;
+  height: 100vh;
+  left: 0;
+  background-color: #EEEEEE;
+  border-right: 1px dotted;
+  border-radius: 5px;
+  overflow: scroll;
+  overflow-x: hidden;
+}
+
+.header {
+  display: inline-block;
+  margin: 0;
+  padding: 0;
+  background-color: #E0E0E0;
+  width:100%;
+  border-radius: 5px;
+}
+
+.task-header {
+  display: inline-block;
+  background-color: skyblue;
+  width:100%;
+}
+
+.droppable {
+  position: absolute;
+  width: 150px;
+  height: 100vh;
+  right: 0;
+  background-color: #9E9E9E;
+  border-left: 1px dotted;
+}
+
+.draggable {
+  width: 100px;
+  height: 100px;
+  background-color: yellow;
+  margin: 5px auto;
+  line-height: 5em;
+  cursor: move;
+}
+
+.fullWH {
+  margin-left:10.5vw;
+}
+
+#paintGrid {
+  border:2px solid #000000;
+  text-align: left;
+  border-radius: 5px;
+  background-color: #fff;
+  background-image:
+  linear-gradient(90deg, transparent 79px, #abced4 79px, #abced4 81px, transparent 81px),
+  linear-gradient(#eee .1em, transparent .1em);
+  background-size: 100% 1.2em;
+  position:fixed;
+  z-index: -1;
+  overflow:scroll;
+}
+
+#messageBox {
+  display: none;
+}
+
+.box {
+  margin-left:85.8vw;
+  margin-top:2px;
+  width: 10.8vw;
+  height: 95vh;
+  border: 2px solid #000;
+  text-align: center;
+  padding: 20px;
+  font-weight: bold;
+  border-radius: 10px;
+  font-size: 70%;
+  position:fixed;
+}
+
+.info {
+  background-color: #ddd;
+  border-color: #aaa; 
+  overflow: scroll;
+  overflow-x: hidden;
+}
+
+#buttons {
+  position:fixed;
+  margin-left:70vw;
+}
+
+#play {
+  margin-top: 2px;
+  background-color: #4CAF50;
+  color: white;
+  padding: 15px 32px;
+  text-align: center;
+  text-decoration: none;
+  display: inline;
+  font-size: 16px;
+  border-radius: 5px;
+  cursor:pointer;
+}
+
+#resume {
+  margin-top: 2px;
+  background-color: #4CAF50;
+  color: white;
+  padding: 15px 32px;
+  text-align: center;
+  text-decoration: none;
+  display: none;
+  font-size: 16px;
+  border-radius: 5px;
+  cursor:pointer;
+}
+
+#pause {
+  margin-top: 2px;
+  background-color: burlywood; 
+  color: white;
+  padding: 15px 32px;
+  text-align: center;
+  text-decoration: none;
+  display: inline;
+  font-size: 16px;
+  border-radius: 5px;
+  display: none;
+  cursor:pointer;
+}
+
+#stop {
+  margin-top: 2px;
+  background-color: red; 
+  color: white;
+  padding: 15px 32px;
+  text-align: center;
+  text-decoration: none;
+  display: inline;
+  font-size: 16px;
+  border-radius: 5px;
+  display: none;
+  cursor:pointer;
+}
+
+#endSession {
+  margin-top: 2px;
+  margin-left: -39vw;
+  background-color: red; 
+  color: white;
+  padding: 15px 32px;
+  text-align: center;
+  text-decoration: none;
+  display: inline;
+  font-size: 16px;
+  border-radius: 5px;
+  position:fixed;
+  cursor:pointer;
+}
