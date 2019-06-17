@@ -63,5 +63,13 @@ The method "computeOutput" is abstract in the base class and will be implemented
 
 To build this derived classes and since we need to highly isolate the logic from the GUI, we decided to create a class called TaskFactory that has a method called buildTaskGraphNodeWithName that receives a string representing the name of the Task. This is perfect for isolating the logic from the front-end, because the front end referrences the tasks by their names and the back-end builds them according to that. This method returns the task graph node corresponding to the name received as parameter. We quickly identified this as a factory method Design Pattern.
 
+The tick watchers of the runners of the nodes, are observing the runners and registering when they tick with the timestamp associated to it. The nodes register the packets that go through any of their inputs and outputs. The runners keep a count of the ticks.
+All this information can easily be accessed by the front end at any time, by calling a endpoint that reports the current information on the graph. This reports:
+ - the tick registry of the nodes since ever, the tick registry since the last report
+ - the current state of each task node (the possible states are IDLING, SLEEPING, PAUSED, STOPPED, WAITING_FOR_INPUTS, COMPUTING, OUTPUTING)
+ - the packet registry of each node (it is a map, grouped by node; ports are distinguished are saved in each packet, no grouping by ports, just like WireShark shows all the packets together)
+ - the current tick count of all runners (the number of times a node has ticked, i.e., performed work)
+
+
 
 The back end 
