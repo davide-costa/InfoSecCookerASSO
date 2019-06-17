@@ -20,6 +20,7 @@ import {ResumeGraphCommandMsg} from "../../Messages/CommandMessages/GraphRunning
 import {SetBufferSizeOfTaskCommandMsg} from "../../Messages/CommandMessages/GraphBuilding/SetBufferSizeOfTaskCommandMsg";
 import {SetTickIntervalOfTaskCommandMsg} from "../../Messages/CommandMessages/GraphBuilding/SetTickIntervalOfTaskCommandMsg";
 import {SetNumberOfCyclesOfTaskCommandMsg} from "../../Messages/CommandMessages/GraphBuilding/SetNumberOfCyclesOfTaskCommandMsg";
+import {EndSessionCommandMsg} from "../../Messages/CommandMessages/EndSessionCommandMsg";
 const joint = require('jointjs');
 const $ = require('jquery');
 
@@ -51,6 +52,7 @@ export default class App extends Component {
     this.onPlay = this.onPlay.bind(this);
     this.onPause = this.onPause.bind(this);
     this.onStop = this.onStop.bind(this);
+    this.onEndSession = this.onEndSession.bind(this);
   }
 
   getTasksNodes()
@@ -180,7 +182,7 @@ export default class App extends Component {
         }
       },
       attrs: {
-        ".label": { text: name + "\n\t" + this.state.nodeStates[this.state.nodeStates.length - 1], "ref-x": 0.5, "ref-y": 0.2 },
+        ".label": { text: name, "ref-x": 0.5, "ref-y": 0.2 },
         rect: { fill: "#2ECC71" }
       }
     });
@@ -369,37 +371,27 @@ export default class App extends Component {
 
   onNewGraphRunningInformation(infoSecFullReportInformationMessage)
   {
-    /*
-    let stringToDisplay = infoSecFullReportInformationMessage.taskNodesIncomingAndOutgoingPacketRegistry.toString() + "\n" +
-      infoSecFullReportInformationMessage.taskNodeStates.toString() + "\n" +
-      infoSecFullReportInformationMessage.tickRegistrySinceEver.toString() + "\n" +
-      infoSecFullReportInformationMessage.tickRegistrySinceLastUpdate.toString() + "\n";*/
-
     let nodesIdsArray = infoSecFullReportInformationMessage.taskNodeStates["@keys"];
     let nodesStatesArray = infoSecFullReportInformationMessage.taskNodeStates["@items"];
+    let nodesTickCountArray = infoSecFullReportInformationMessage.currentTickCountOfAllNodes["@items"];
     for(let i = 0; i < nodesIdsArray.length; i++)
     {
       let nodeId = nodesIdsArray[i];
       let newNodes = this.state.nodes;
-      let newNodeStates = this.state.nodeStates;
       for(let j = 0; j < newNodes.length; j++)
       {
        if(newNodes[j].attributes.backendId == nodeId)
        {
-         let labelSplitted = newNodes[j].attributes.attrs[".label"].text.toString().split("\t\n");
-         this.state.nodes[j].attributes.attrs[".label"].text = labelSplitted[0] + "\t\n" + nodesStatesArray[i];
+         let labelSplitted = newNodes[j].attributes.attrs[".label"].text.toString().split("\n");
+         this.state.graph.getElements()[j].attr('.label/text', labelSplitted[0] + "\n" + nodesStatesArray[i] + "\n" + nodesTickCountArray[i]);
        }
       }
     }
-
-    /*let newInfoBoxString = (this.state.infoBox + stringToDisplay).toString();
-    this.setState({
-      infoBox: newInfoBoxString
-    });*/
   }
 
-  onEndSession() {
-
+  onEndSession()
+  {
+        this.communication.sendExecuteCommandRequest(new EndSessionCommandMsg(JSON.stringify(this.graphData)));
   }
 
   render () {

@@ -9,6 +9,7 @@ class InfoSecFullReportInformationMessage extends InfoSecInformationMessage
         this.tickRegistrySinceEver = this.jsonMessage["tickRegistrySinceEver"];
         this.taskNodeStates = this.jsonMessage["taskNodeStates"];
         this.taskNodesIncomingAndOutgoingPacketRegistry = this.jsonMessage["taskNodesIncomingAndOutgoingPacketRegistry"];
+        this.currentTickCountOfAllNodes = this.jsonMessage["currentTickCountOfAllNodes"];
     }
 }
 
