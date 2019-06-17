@@ -46,7 +46,8 @@ Then, we started thinking about implementing the graph building logic, consistin
  - removing edges
  - setting tick interval of a node
 
-For this we created a class called GraphBuilder, using the Builder pattern.
+For this, we created a class called GraphBuilder, using the Builder pattern. This class already created the Task nodes and the pipe edges, all connected to each other and ready to work, process and transfer information through the pipes.
+This GraphBuilder contains a method to verify if all the nodes are in correct connected state and without errors and a method return the graph built.
 
-
-buidling the Graph 
+When the user wants to start the graph, an instance of another class GraphRunner is created to implement this feature. It creates the Task running threads, with the appropriate tick intervals (tick interval default is 0, for a node that immediately starts waiting for inputs (pulling information), then computes and outputs the result).
+This class contains methods to start the graph (starts all the Task nodes). After starting the Graph all the Task runners are started and the information starts flowing from in upstream to downstream direction. The GraphRunner has support to pause and later resume the graph execution, and keep the remaining time in terms of tick interval, i.e., for example if the tick interval is 500 ms and it has been a sleep for only 300 ms when this method is called, the next time it is resumed, it will sleep for 200 ms before beginning computation. It also has a method to stop and reset the execution of the graph which clears the remaining time of the tick intervals and the next time it is resumed, the count for the tick interval starts from 0. (It also has a method to resume the graph execution (which can only be called if it it paused or stopped).).
