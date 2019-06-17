@@ -3,6 +3,7 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/InfoSecCooker.iml" filepath="$PROJECT_DIR$/InfoSecCooker.iml" />
+      <module fileurl="file://$PROJECT_DIR$/json-io-master/json-io-master.iml" filepath="$PROJECT_DIR$/json-io-master/json-io-master.iml" />
     </modules>
   </component>
 </project>

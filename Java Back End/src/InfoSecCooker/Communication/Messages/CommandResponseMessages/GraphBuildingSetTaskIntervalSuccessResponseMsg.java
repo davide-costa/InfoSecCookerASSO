@@ -1,0 +1,6 @@
+package InfoSecCooker.Communication.Messages.CommandResponseMessages;
+
+public class GraphBuildingSetTaskIntervalSuccessResponseMsg extends GraphBuildingSuccessResponseMsg
+{
+
+}

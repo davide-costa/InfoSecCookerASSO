@@ -1,9 +1,12 @@
 package InfoSecCooker;
 
-public class Main {
+import InfoSecCooker.Communication.NewClientsListener;
 
-    public static void main(String[] args)
+public class Main
+{
+    public static void main(String[] args) throws InterruptedException
     {
-
+        NewClientsListener newClientsListener = new NewClientsListener();
+        newClientsListener.run();
     }
 }
