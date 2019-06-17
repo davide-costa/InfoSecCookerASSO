@@ -70,6 +70,7 @@ All this information can easily be accessed by the front end at any time, by cal
  - the packet registry of each node (it is a map, grouped by node; ports are distinguished are saved in each packet, no grouping by ports, just like WireShark shows all the packets together)
  - the current tick count of all runners (the number of times a node has ticked, i.e., performed work)
 
+The Tasks can be configured to run only once or be infinite (any kind of Task), the tick interval of each can be configured, they can be configured to tick immediately after launch or wait the tick interval before launch. The entire graph can be paused or stopped (already described above), (which results in pausing or stopping all the tasks) and then resumed.
+The information of the graph can be retrieved any time without causing synchronization problems (we used Java's synchronized data types when possible and monitors or semaphores where necessary in order to achieve this).
 
-
-The back end 
+It is worth to mention that the Java backend supports multiple sessions. This means that the same Java back end application can be a server of multiple front end applications. The back-end logic is compeletely abstracted from the front end and as long as both speak the same language (JSON and HTTP), another front end could easily be developed and still use the same Java back end logic server. The Java applications keeps track of the session and associates all the graph data to each session and compeletely isolates the multiple sessions. In order to achieve this, we avoided the use of singleton (in the begining we created a singleton general configurations class, only to have to refactor later in order to achieve the multiple session support and we learned from our mistakes that singleton sometimes can be an anti-pattern).
