@@ -76,3 +76,8 @@ The information of the graph can be retrieved any time without causing synchroni
 It is worth to mention that the Java backend supports multiple sessions. This means that the same Java back end application can be a server of multiple front end applications. The back-end logic is compeletely abstracted from the front end and as long as both speak the same language (JSON and HTTP), another front end could easily be developed and still use the same Java back end logic server. The Java applications keeps track of the session and associates all the graph data to each session and compeletely isolates the multiple sessions. In order to achieve this, we avoided the use of singleton (in the begining we created a singleton general configurations class, only to have to refactor later in order to achieve the multiple session support and we learned from our mistakes that singleton sometimes can be an anti-pattern).
 
 It is possible to save the state of the front end (positions of the nodes) and the state in back end. The front end calls the back-end indicating that it wants to save the session, sends the information relative to the front end in a string (which happens to be a String but it is meaningless to the back end, only received and saved to a file as is, it is not parsed). The back end adds the information relative to the logic. This information is saved using the Command Design Pattern. All the commands for building the graph are saved. At the time of saving the session, those commands are retrieved and written to a file among with the front end data.
+
+## Team Members
+ - Davide Costa | up201503995
+ - Dinis Trigo | up201504196
+ - Diogo Reis | up201505472
