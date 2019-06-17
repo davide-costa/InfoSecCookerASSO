@@ -31,5 +31,22 @@ The architecture was just modeling the Graph nodes, and the way they communicate
 
 The teacher said that the requirements were that each node should not only perform one cycle and we could have nodes continously executing, for example "A node that is generating random numbers 4 times per second" and that we should be modeling also the pipes (the graph edges) that transfered data between the nodes, i.e., using the architecture pipes and filters.
 To solve this problem, we added a class for representing the pipes, responsible for handling the data transferring between the nodes. It was a wrapper class for the Java ArrayBlockingQueue. We used this class since it implements the required features: the pipe should have a method to write data to it that should block if the buffer is full and a method to read data that blocks until data is available on the pipe, allowing nodes to be blocked waiting for inputs, as long as they run on different threads.
+To enable the nodes to run on different threads, we created a new class responsible for running the node. This class runs on a Thread and so we are able to implement nodes with cycles based on time. For the above example, for the node that performs work 4 times per second, this class will call the tick method of the graph node 4 times per second.
+The class that represents the Graph node keeps an internal state so that it is possible to know if it is IDLING, WAITING_FOR_INPUTS, COMPUTING, or OUTPUTING.
+The class that runns the node also keeps an internal state IDLING, SLEEPING, WORKING, PAUSED, or STOPPED. This state is used to inform the front end and also to be able to pause, stop and resume the Task. This was implemented expecting to add support for the user to pause the Graph and resume it (keeping track of the time and waiting only the remaining time) or stop and reset the whole graph, being able to start it again later.
+All the Threads running the nodes are observed by another class, using the Observer pattern. This allows us to notify the front end app of the errors that occurr on the Task nodes and their state.
 
-responsible for running the node. This class runs on a Thread  placed each node on a thread 
+All the above respects to the superclasses that implement the main logic.
+Then we started thinking about implementing Function Nodes, i.e., a node that is composed by other nodes. To implement this we created a derived class of the task graph node. We implemented this in the form of extracting a function from the graph, given the list of nodes composing it. Since the logic is complicated because only the ids of the nodes that would compose the function would be known and we would need to perform graph analysis to indentify which nodes are the sources (the ones that connect to the outside of the function upstream direction) and which nodes are the sinks of the function (the ones that connect to the outside of the function downstream direction), we decided to put this logic into a separate class called FunctionExtractor. This uses the Builder pattern.
+
+Then, we started thinking about implementing the graph building logic, consisting of methods that would be called to perform the actions to build the graph, such as:
+ - adding nodes
+ - adding edges: connecting node outputs to node inputs
+ - removing nodes
+ - removing edges
+ - setting tick interval of a node
+
+For this we created a class called GraphBuilder, using the Builder pattern.
+
+
+buidling the Graph 
