@@ -4,13 +4,13 @@ import InfoSecCooker.GraphLogic.GraphData.InfoSecGraphData;
 import InfoSecCooker.GraphLogic.GraphData.StringGraphData;
 import InfoSecCooker.GraphLogic.GraphRunning.RunTimeConfigurations;
 import InfoSecCooker.GraphLogic.GraphRunning.RuntimeExceptions.ComputationException;
-import InfoSecCooker.GraphLogic.PipeGraphEdge.PipeGraphEdge;
 import InfoSecCooker.GraphLogic.TaskGraphNodes.GraphNodeInformation;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.HashMap;
+import java.util.List;
 
 public class ReadTextFile extends ReadFromFile
 {
@@ -40,7 +40,12 @@ public class ReadTextFile extends ReadFromFile
 
     private String readTextFromFileSystem(String filename) throws IOException
     {
-        return String.valueOf(java.nio.file.Files.readAllLines(Paths.get(filename)));
+        String accum = "";
+        List<String> stringArrayList = Files.readAllLines(Paths.get(filename));
+        for(String string : stringArrayList)
+            accum += string;
+
+        return accum;
     }
 
 
