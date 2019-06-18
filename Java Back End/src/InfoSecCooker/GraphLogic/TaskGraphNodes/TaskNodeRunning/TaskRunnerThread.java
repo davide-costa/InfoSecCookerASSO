@@ -15,13 +15,15 @@ public class TaskRunnerThread extends TimerTask
     Object tickNotificationMonitor;
     Object tickFinishedNotificationMonitor;
     AtomicLong startTimeMillis;
+    TaskRunnerController taskRunnerController;
 
-    public TaskRunnerThread(TaskGraphNode taskGraphNode, Object tickNotificationMonitor, Object tickFinishedNotificationMonitor, AtomicLong startTimeMillis)
+    public TaskRunnerThread(TaskGraphNode taskGraphNode, Object tickNotificationMonitor, Object tickFinishedNotificationMonitor, AtomicLong startTimeMillis, TaskRunnerController taskRunnerController)
     {
         this.taskGraphNode = taskGraphNode;
         this.tickNotificationMonitor = tickNotificationMonitor;
         this.tickFinishedNotificationMonitor = tickFinishedNotificationMonitor;
         this.startTimeMillis = startTimeMillis;
+        this.taskRunnerController = taskRunnerController;
     }
 
     @Override
@@ -32,6 +34,7 @@ public class TaskRunnerThread extends TimerTask
         synchronized (tickNotificationMonitor)
         {
             tickNotificationMonitor.notify();
+            taskRunnerController.setStateAsWorking();
         }
         try
         {

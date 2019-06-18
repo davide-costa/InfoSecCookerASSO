@@ -16,6 +16,7 @@ import InfoSecCooker.GraphLogic.TaskGraphNodes.SpecificNodeImplementations.Sourc
 import InfoSecCooker.GraphLogic.TaskGraphNodes.SpecificNodeImplementations.Text.Lowercase;
 import InfoSecCooker.GraphLogic.TaskGraphNodes.SpecificNodeImplementations.Text.TabsToSpaces;
 import InfoSecCooker.GraphLogic.TaskGraphNodes.SpecificNodeImplementations.Text.Uppercase;
+import InfoSecCooker.GraphLogic.TaskGraphNodes.SpecificNodeImplementations.ToInt.ToInt;
 import InfoSecCooker.GraphLogic.TaskGraphNodes.TaskGraphNode;
 
 import java.util.ArrayList;
@@ -103,6 +104,7 @@ public class TaskFactory
         list.add(Lowercase.getTaskInformation());
         list.add(Uppercase.getTaskInformation());
         list.add(TabsToSpaces.getTaskInformation());
+        list.add(ToInt.getTaskInformation());
         return list;
     }
 }

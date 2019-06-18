@@ -68,7 +68,7 @@ public class TaskRunnerController extends TimerTask
         taskRunnerThreadExecutor = Executors.newScheduledThreadPool(1);
         nextSleepInterval = 1000;
         startTimeMillis = new AtomicLong();
-        taskRunnerThread = new TaskRunnerThread(taskGraphNode, tickNotificationMonitor, tickFinishedNotificationMonitor, startTimeMillis);
+        taskRunnerThread = new TaskRunnerThread(taskGraphNode, tickNotificationMonitor, tickFinishedNotificationMonitor, startTimeMillis, this);
         currentTickCount = new Long(0);
     }
 
@@ -155,6 +155,11 @@ public class TaskRunnerController extends TimerTask
         return currentTickCount;
     }
 
+    public void setStateAsWorking()
+    {
+        state = TaskRunnerState.WORKING;
+    }
+
     /**
      * This method implements the tick functionality time logic of a node.
      * It calls the tick method of the TaskGraphNode.
@@ -201,6 +206,7 @@ public class TaskRunnerController extends TimerTask
             synchronized (tickFinishedNotificationMonitor)
             {
                 tickFinishedNotificationMonitor.wait();
+                state = TaskRunnerState.SLEEPING;
             }
             currentTickCount++;
         } catch (InterruptedException e)
