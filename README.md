@@ -79,5 +79,5 @@ It is possible to save the state of the front end (positions of the nodes) and t
 
 ## Team Members
  - Davide Costa | up201503995
- - Dinis Trigo | up201504196
- - Diogo Reis | up201505472
+ - [Dinis Trigo](https://github.com/up201504196) | up201504196
+ - [Diogo Reis](https://github.com/up201505472)| up201505472
