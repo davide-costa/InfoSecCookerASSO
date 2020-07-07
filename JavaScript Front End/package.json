@@ -5,7 +5,7 @@
   "main": "public/Main.js",
   "dependencies": {
     "@gumgum/react-script-tag": "0.0.3",
-    "electron": "^2.0.8",
+    "electron": "^7.2.4",
     "interactjs": "^1.4.0-rc.13",
     "jointjs": "^3.0.0",
     "jquery": "^3.4.1",
@@ -43,6 +43,6 @@
     ]
   },
   "devDependencies": {
-    "electron": "^5.0.2"
+    "electron": "^7.2.4"
   }
 }
